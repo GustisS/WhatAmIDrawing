@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<title>MLH project</title>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<meta name="Description" lang="en" content="ADD SITE DESCRIPTION">
+		<meta name="author" content="ADD AUTHOR INFORMATION">
+		<meta name="robots" content="index, follow">
+
+		<!-- icons -->
+		<link rel="apple-touch-icon" href="assets/img/apple-touch-icon.png">
+		<link rel="shortcut icon" href="favicon.ico">
+
+		<!-- Override CSS file - add your own CSS rules -->
+		<link rel="stylesheet" href="assets/css/styles.css">
+		
+
+		<script type="text/javascript" src="https://sdk.clarifai.com/js/clarifai-latest.js"></script>
+		<script src="jscolor.js"></script>	
+		<script type="text/javascript">
+		
+    // Variables for referencing the canvas and 2dcanvas context
+    var canvas,ctx;
+
+    // Variables to keep track of the mouse position and left-button status 
+    var mouseX,mouseY,mouseDown=0;
+
+    // Draws a dot at a specific position on the supplied canvas name
+    // Parameters are: A canvas context, the x position, the y position, the size of the dot
+    function drawDot(ctx,x,y,size) {
+        // Select a fill style
+        ctx.fillStyle = "#"+document.getElementById("colorpick").innerHTML;
+		
+        // Draw a filled circle
+        ctx.beginPath();
+        ctx.arc(x, y, 10, 0, Math.PI*2, true); 
+        ctx.closePath();
+        ctx.fill();
+    } 
+
+    // Clear the canvas context using the canvas width and height
+    function clearCanvas(canvas,ctx) {
+        ctx.clearRect(0, 0, canvas.width, canvas.height);
+    }
+
+    // Keep track of the mouse button being pressed and draw a dot at current location
+    function sketchpad_mouseDown() {
+        mouseDown=1;
+        drawDot(ctx,mouseX,mouseY,12);
+    }
+
+    // Keep track of the mouse button being released
+    function sketchpad_mouseUp() {
+        mouseDown=0;
+    }
+	
+	function saveImage()
+	{
+	 	var canvas = document.getElementById("canv");
+		var img    = canvas.toDataURL("image/png");
+		<!--document.write('<img src="'+img+'"/>');
+		app.models.predict(Clarifai.GENERAL_MODEL, 'https://samples.clarifai.com/metro-north.jpg').then(
+  		function(response) {
+   		console.log(response);
+  		},
+ 		 function(err) {
+    	 console.error(err);
+  }
+);
+	}
+	
+
+	
+    // Keep track of the mouse position and draw a dot if mouse button is currently pressed
+    function sketchpad_mouseMove(e) { 
+        // Update the mouse co-ordinates when moved
+        getMousePos(e);
+
+        // Draw a dot if the mouse button is currently being pressed
+        if (mouseDown==1) {
+            drawDot(ctx,mouseX,mouseY,12);
+        }
+    }
+
+    // Get the current mouse position relative to the top-left of the canvas
+    function getMousePos(e) {
+        if (!e)
+            var e = event;
+
+        if (e.offsetX) {
+            mouseX = e.offsetX;
+            mouseY = e.offsetY;
+        }
+        else if (e.layerX) {
+            mouseX = e.layerX;
+            mouseY = e.layerY;
+        }
+     }
+
+
+    // Set-up the canvas and add our event handlers after the page has loaded
+    function init() {
+        // Get the specific canvas element from the HTML document
+        canvas = document.getElementById('canv');
+
+        // If the browser supports the canvas tag, get the 2d drawing context for this canvas
+        if (canvas.getContext)
+            ctx = canvas.getContext('2d');
+
+        // Check that we have a valid context to draw on/with before adding event handlers
+        if (ctx) {
+            canvas.addEventListener('mousedown', sketchpad_mouseDown, false);
+            canvas.addEventListener('mousemove', sketchpad_mouseMove, false);
+            window.addEventListener('mouseup', sketchpad_mouseUp, false);
+        }
+    }
+</script>
+
+	</head>
+	<body onload="init()">
+
+		<div class="container">
+			<div class="header">
+				<h1 class="header-heading">What am I drawing?</h1>
+				<h2 class="header-heading">Draw a picture and let an AI tell you what it thinks!</h2>
+			</div>
+
+			<div class="content" style="text-align:center;">
+
+				<button id="colorpick" class="jscolor {value:'000000'}"></button>
+				<input type="submit" value="Clear Canvas" class="canvasClear" id="clearbutton" onclick="clearCanvas(canvas,ctx);">
+				<button  onclick="saveImage()" class="canvasAdd">Upload Canvas</button>
+
+        </div>
+				<div class="main">
+
+            <canvas class="maincanv" id="canv" height="800" width="800">
+            </canvas>
+
+					 <h1 class="tags-heading">Predictions</h1>
+				<div class="tags-container">
+					 <p id=tag1 class="tag">
+					<script>
+					 	var element = document.getElementById("tag1");
+						element.innerHTML = "New tag";
+					</script>
+					 </p>
+					 <p id=tag2 class="tag">
+					 <script>
+					 	var element = document.getElementById("tag2");
+					 	element.innerHTML = "New tag";
+					 </script>
+					 </p>
+				</div>
+			</div>
+			<div class="footer">
+			unnamed mlh project
+		</div>
+		</div>
+
+		<script>
+		function setTextColor(picker) {
+		document.getElementsByTagName('body')[0].style.color = '#' + picker.toString()
+		}
+	 	</script>
+		<script>
+
+		function loadImage()
+		{
+		// get canvas context
+		var ctx = document.getElementById('canv').getContext('2d');
+		// load image
+		var image = new Image();  
+		image.onload = function () 
+		{  
+   		// draw the image into the canvas
+    	ctx.drawImage(image, 0, 0);
+		}
+ 		image.src = 'blank.png';  
+		}
+		</script>
+		<script src="main.js"></script>
+    <script src="bundle.js"></script>
+	</body>
+</html>
